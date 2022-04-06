@@ -39,7 +39,11 @@ final class TableViewsModel: NSObject {
             delegate.showError(errorTitle: "Cannot Create Table", errorDetail: name?.isEmpty ?? false ? "Table name cannot be empty" : "Table name exists already")
             return
         }
-        let table = Table(name: name!)
+        var name = name!.capitalized
+        name = name.trimming(spaces: .leadingAndTrailing)
+        name = name.replacingOccurrences(of: "  ", with: " ")
+        name = name.replacingOccurrences(of: " ", with: "_")
+        let table = Table(name: name)
         database.tables.append(table)
         record.databases[databaseIndex] = database
         Helper.shared.record = record

@@ -10,31 +10,56 @@ import UIKit
 protocol EditAttributeViewModelDelegate: BaseModelDelegate {
     func updateViewsWithAttribute(attribute: Attribute)
     func updateButtonImages(attribute: inout Attribute)
-    func updateTypeText(text: String)
-    func giveUpResponder()
+    func updateTypeText(associatedPickerTag: Int, text: String)
+    func giveUpResponder(associatedPickerTag: Int)
+    func shouldDisplayForeignKeyText(shouldShow: Bool)
+    func updateForeignKeyLabelText(text: String)
+    func reloadTablesPicker()
+    func reloadAttributesPicker()
+    func shouldShowAttributesPicker(shouldShow: Bool)
     func dismissView()
 }
 
 final class EditAttributeViewModel: NSObject {
     weak var delegate: EditAttributeViewModelDelegate?
-    private var record = Helper.shared.record
+    private var record: Record!
     var databaseID: String = ""
     var tableID: String = ""
     var attributeID: String = ""
     private var attributeCopy: Attribute!
     
+    private var database: Database?
+    private var tables = [Table]()
+    private var foreignAttributes = [Attribute]()
+    
+    private var selectedTable: Table? {
+        didSet {
+            guard let selectedTable = selectedTable,
+                  let delegate = delegate else {
+                return
+            }
+            foreignAttributes = selectedTable.attributes
+            delegate.reloadAttributesPicker()
+            delegate.shouldShowAttributesPicker(shouldShow: true)
+        }
+    }
+    private var selectedForeignAttribute: Attribute?
     
     func loadAttributeInformation() {
+        record = Helper.shared.record.copy() as? Record
         guard let delegate = delegate,
-              let database = record.databases.first(where: {$0.id == databaseID}),
-              let table = database.tables.first(where: {$0.id == tableID}),
-              let attribute = table.attributes.first(where: {$0.id == attributeID})
+              let database = record.databases.first(where: {$0.id == databaseID})?.copy() as? Database,
+              let table = database.tables.first(where: {$0.id == tableID})?.copy() as? Table,
+              let attribute = table.attributes.first(where: {$0.id == attributeID})?.copy() as? Attribute
         else {
             return
         }
-        self.attributeCopy = attribute
-        delegate.updateViewsWithAttribute(attribute: attribute)
+        self.database = database
+        attributeCopy = attribute
+        self.tables = database.tables
+        delegate.updateViewsWithAttribute(attribute: attributeCopy)
         delegate.updateButtonImages(attribute: &attributeCopy)
+        delegate.shouldDisplayForeignKeyText(shouldShow: attributeCopy.foreignKeyConstraint != nil)
     }
     
     func toggleAttributeNullConstraint() {
@@ -102,6 +127,28 @@ final class EditAttributeViewModel: NSObject {
         delegate.dismissView()
     }
     
+    func createForeignKeyConstraint() {
+        guard let primaryKeyTable = selectedTable,
+              let primaryKeyAttribute = selectedForeignAttribute,
+              let delegate = delegate else {
+            return
+        }
+        let constraint = ForeignKeyRelationConstraint(primaryKeyTableID: primaryKeyTable.id, primaryKeyAttributeID: primaryKeyAttribute.id)
+        attributeCopy.foreignKeyConstraint = constraint
+        delegate.shouldDisplayForeignKeyText(shouldShow: self.attributeCopy.foreignKeyConstraint != nil)
+        let text = "REFERENCES COLUMN(\(primaryKeyAttribute.name)) FROM TABLE (\(primaryKeyTable.name))"
+        delegate.updateForeignKeyLabelText(text: text)
+    }
+    
+    func updateTablesList() {
+        guard let database = database,
+                let delegate = delegate else {
+            return
+        }
+        tables = database.tables
+        delegate.reloadTablesPicker()
+    }
+    
     func removeAttribute() {
         
     }
@@ -115,30 +162,58 @@ extension EditAttributeViewModel: UIPickerViewDelegate, UIPickerViewDataSource {
     }
     
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-        return AttributeType.allCases.count
+        switch pickerView.tag {
+        case 0:
+            return AttributeType.allCases.count
+        case 1:
+            return tables.count
+        case 2:
+            return foreignAttributes.count
+        default:
+            return 0
+        }
     }
     
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-        return AttributeType.allCases[row].rawValue
+        switch pickerView.tag {
+        case 0:
+            return AttributeType.allCases[row].rawValue
+        case 1:
+            return tables[row].name
+        case 2:
+            return foreignAttributes[row].name
+        default:
+            return nil
+        }
     }
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         guard let delegate = delegate else {
             return
         }
-        attributeCopy?.type = AttributeType.allCases[row]
-        delegate.updateTypeText(text: AttributeType.allCases[row].rawValue)
-        delegate.giveUpResponder()
+        var text = ""
+        switch pickerView.tag {
+        case 0:
+            attributeCopy?.type = AttributeType.allCases[row]
+            text = AttributeType.allCases[row].rawValue
+        case 1:
+            selectedTable = tables[row]
+            text = tables[row].name
+        case 2:
+            selectedForeignAttribute = foreignAttributes[row]
+            text = foreignAttributes[row].name
+        default:
+            return
+        }
+        delegate.updateTypeText(associatedPickerTag: pickerView.tag, text: text)
+        delegate.giveUpResponder(associatedPickerTag: pickerView.tag)
     }
 }
 
 // MARK: TextField Delegate
 extension EditAttributeViewModel: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        guard let delegate = delegate else {
-            return false
-        }
-        delegate.giveUpResponder()
+        textField.resignFirstResponder()
         return true
     }
 }

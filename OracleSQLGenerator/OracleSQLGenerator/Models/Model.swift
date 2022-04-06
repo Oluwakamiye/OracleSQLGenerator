@@ -20,14 +20,14 @@ enum AttributeType: String, CaseIterable, Codable {
     case date = "date"
 }
 
-class Attribute: Hashable, Codable {
+class Attribute: Hashable, Codable, NSCopying {
     var id: String = "\(UUID())"
     var name: String
     var isPrimaryKey: Bool
     var isNull: Bool
     var isUnique: Bool
     var type: AttributeType
-    var foreignKeyConstraints: [ForeignKeyRelationConstraint] = []
+    var foreignKeyConstraint: ForeignKeyRelationConstraint? = nil
     
     func hash(into hasher: inout Hasher) {
         hasher.combine(id)
@@ -37,20 +37,25 @@ class Attribute: Hashable, Codable {
         lhs.id == rhs.id
     }
     
-    init(name: String, isPrimaryKey: Bool, isNull: Bool, isUnique: Bool, type: AttributeType) {
+    init(name: String, isPrimaryKey: Bool, isNull: Bool, isUnique: Bool, type: AttributeType, foreignKeyConstraint: ForeignKeyRelationConstraint? = nil) {
         self.name = name
         self.isPrimaryKey = isPrimaryKey
         self.isNull = isNull
         self.isUnique = isUnique
         self.type = type
+        self.foreignKeyConstraint = foreignKeyConstraint
+    }
+    
+    func copy(with zone: NSZone? = nil) -> Any {
+        let copy = Attribute(name: name, isPrimaryKey: isPrimaryKey, isNull: isNull, isUnique: isUnique, type: type, foreignKeyConstraint: foreignKeyConstraint)
+        return copy
     }
 }
 
-class Table: Hashable, Codable {
+class Table: Hashable, Codable, NSCopying {
     var id: String = "\(UUID())"
     var name: String
     var attributes: [Attribute] = []
-    var foreignKeyConstraints: [ForeignKeyRelationConstraint] = []
     
     func hash(into hasher: inout Hasher) {
         hasher.combine(id)
@@ -60,12 +65,18 @@ class Table: Hashable, Codable {
         lhs.id == rhs.id
     }
     
-    init(name: String) {
+    init(name: String, attributes: [Attribute] = [Attribute]()) {
         self.name = name
+        self.attributes = attributes
+    }
+    
+    func copy(with zone: NSZone? = nil) -> Any {
+        let copy = Table(name: name, attributes: attributes)
+        return copy
     }
 }
 
-class Database: Hashable, Codable {
+class Database: Hashable, Codable, NSCopying {
     var id: String = "\(UUID())"
     var name: String
     var tables: [Table]
@@ -82,13 +93,17 @@ class Database: Hashable, Codable {
         self.name = name
         self.tables = tables
     }
+    
+    func copy(with zone: NSZone? = nil) -> Any {
+        let copy = Database(name: name, tables: tables)
+        return copy
+    }
 }
 
-class ForeignKeyRelationConstraint: Hashable, Codable {
+class ForeignKeyRelationConstraint: Hashable, Codable, NSCopying {
     var id: String = "\(UUID())"
-    var primaryKeyTable: Table
-    var primaryKeyAttribute: Attribute
-    var foreignKeyAttribute: Attribute
+    var primaryKeyTableID: String
+    var primaryKeyAttributeID: String
     
     func hash(into hasher: inout Hasher) {
         hasher.combine(id)
@@ -98,19 +113,28 @@ class ForeignKeyRelationConstraint: Hashable, Codable {
         lhs.id == rhs.id
     }
     
-    init(primaryKeyTable: Table, primaryKeyAttribute: Attribute, foreignKeyAttribute: Attribute) {
-        self.primaryKeyTable = primaryKeyTable
-        self.primaryKeyAttribute = primaryKeyAttribute
-        self.foreignKeyAttribute = foreignKeyAttribute
+    init(primaryKeyTableID: String, primaryKeyAttributeID: String) {
+        self.primaryKeyTableID = primaryKeyTableID
+        self.primaryKeyAttributeID = primaryKeyAttributeID
+    }
+    
+    func copy(with zone: NSZone? = nil) -> Any {
+        let copy = ForeignKeyRelationConstraint(primaryKeyTableID: primaryKeyTableID, primaryKeyAttributeID: primaryKeyAttributeID)
+        return copy
     }
 }
 
-class Record: Codable {
+class Record: Codable, NSCopying {
     var databases: [Database]
     var lastModified: Date
     
     init(databases: [Database], lastModified: Date) {
         self.databases = databases
         self.lastModified = lastModified
+    }
+    
+    func copy(with zone: NSZone? = nil) -> Any {
+        let copy = Record(databases: databases, lastModified: lastModified)
+        return copy
     }
 }

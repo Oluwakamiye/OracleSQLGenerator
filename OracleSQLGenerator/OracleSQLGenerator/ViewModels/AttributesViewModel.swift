@@ -45,8 +45,12 @@ final class AttributesViewModel: NSObject {
             delegate.showError(errorTitle: "Cannot Create Table", errorDetail: name?.isEmpty ?? false ? "Table name cannot be empty" : "Table name exists already")
             return
         }
-        let isPrimaryKeyInferred = name!.caseInsensitiveCompare("ID") == .orderedSame
-        let attribute = Attribute(name: name!, isPrimaryKey: isPrimaryKeyInferred, isNull: isPrimaryKeyInferred, isUnique: !isPrimaryKeyInferred, type: type)
+        var name = name!.lowercased()
+        name = name.trimming(spaces: .leadingAndTrailing)
+        name = name.replacingOccurrences(of: "  ", with: " ")
+        name = name.replacingOccurrences(of: " ", with: "_")
+        let isPrimaryKeyInferred = name.caseInsensitiveCompare("ID") == .orderedSame
+        let attribute = Attribute(name: name, isPrimaryKey: isPrimaryKeyInferred, isNull: isPrimaryKeyInferred, isUnique: !isPrimaryKeyInferred, type: type)
         
         table.attributes.append(attribute)
         database.tables[tableIndex] = table

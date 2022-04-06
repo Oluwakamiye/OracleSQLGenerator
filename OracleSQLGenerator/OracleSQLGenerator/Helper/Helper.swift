@@ -17,7 +17,7 @@ class Helper {
     
     var record: Record = Helper.fetchNonEmptyRecord() {
         didSet {
-            Helper.saveRecordToDisk(record: record)
+            Helper.saveRecordToDisk(record: self.record)
         }
     }
     static let shared = Helper()

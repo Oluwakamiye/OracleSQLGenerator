@@ -96,6 +96,7 @@ extension AttributesViewController: UITableViewDelegate {
         guard let attribute = dataSource.itemIdentifier(for: indexPath) else {
             return
         }
+        navigationItem.backButtonTitle = "Attributes"
         viewModel.selectAttributeForEditing(attribute: attribute)
     }
     
@@ -124,13 +125,14 @@ extension AttributesViewController: UIPickerViewDelegate, UIPickerViewDataSource
             return
         }
         attributeTypeText.text = AttributeType.allCases[row].rawValue
+        attributeTypeText.resignFirstResponder()
     }
 }
 
 // MARK: ViewModel Delegates
 extension AttributesViewController: AttributesViewModelDelegate {
     func updateNavigationTitle(title: String) {
-        navigationItem.title = "\(title) - attributes"
+        navigationItem.title = "Attributes"
     }
     
     func updateAttributesList(attributes: [Attribute], animatingDifferences: Bool) {

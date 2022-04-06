@@ -77,11 +77,12 @@ extension DatabasesViewController: UITableViewDelegate {
               let destinationVC = TablesViewController.makeSelf(databaseID: database.id) else {
             return
         }
+        navigationItem.backButtonTitle = database.name
         navigationController?.pushViewController(destinationVC, animated: true)
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 60
+        return 62
     }
 }
 

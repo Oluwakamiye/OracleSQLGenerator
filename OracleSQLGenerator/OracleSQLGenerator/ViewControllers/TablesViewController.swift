@@ -52,6 +52,8 @@ class TablesViewController: UIViewController {
         rightButton.addTarget(self, action: #selector(createQuery), for: .touchUpInside)
         let rightBarButton = UIBarButtonItem(customView: rightButton)
         navigationItem.rightBarButtonItem = rightBarButton
+        
+        navigationItem.backButtonTitle = "None"
     }
     
     @objc func createQuery() {
@@ -99,6 +101,7 @@ extension TablesViewController: UITableViewDelegate {
         guard let table = dataSource.itemIdentifier(for: indexPath) else {
             return
         }
+        navigationItem.backButtonTitle = table.name
         viewModel.selectTable(table: table)
     }
     
@@ -131,7 +134,7 @@ extension TablesViewController: TableViewsModelDelegate {
             present(mail, animated: true)
         } else {
             // show failure alert
-            print("Error")
+            showErrorAlert(error: "Cannot Send Mail")
         }
     }
     

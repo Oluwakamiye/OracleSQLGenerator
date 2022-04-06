@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		C536AC5F27FDA83500627723 /* ForeignKeyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C536AC5E27FDA83500627723 /* ForeignKeyViewController.swift */; };
 		C54A55BF27FB32D200DC4744 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C54A55BE27FB32D200DC4744 /* AppDelegate.swift */; };
 		C54A55C127FB32D200DC4744 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C54A55C027FB32D200DC4744 /* SceneDelegate.swift */; };
 		C54A55C327FB32D200DC4744 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C54A55C227FB32D200DC4744 /* ViewController.swift */; };
@@ -37,7 +36,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		C536AC5E27FDA83500627723 /* ForeignKeyViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForeignKeyViewController.swift; sourceTree = "<group>"; };
 		C54A55BB27FB32D200DC4744 /* OracleSQLGenerator.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OracleSQLGenerator.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C54A55BE27FB32D200DC4744 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		C54A55C027FB32D200DC4744 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -132,7 +130,6 @@
 				C54A55DC27FB3ABF00DC4744 /* TablesViewController.swift */,
 				C54A55E427FB40E400DC4744 /* AttributesViewController.swift */,
 				C54A55E627FB410500DC4744 /* EditAttributeViewController.swift */,
-				C536AC5E27FDA83500627723 /* ForeignKeyViewController.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -252,7 +249,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				C5B127EB27FCCE74006A418B /* UIViewController+Extension.swift in Sources */,
-				C536AC5F27FDA83500627723 /* ForeignKeyViewController.swift in Sources */,
 				C54A55F027FB45C800DC4744 /* DatabaseViewModel.swift in Sources */,
 				C54A55E127FB3D7F00DC4744 /* String+Extension.swift in Sources */,
 				C54A55E927FB425F00DC4744 /* DatabasesViewController.swift in Sources */,
