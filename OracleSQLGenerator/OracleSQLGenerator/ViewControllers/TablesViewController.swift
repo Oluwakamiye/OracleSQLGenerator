@@ -21,17 +21,18 @@ class TablesViewController: UIViewController {
         viewModel.delegate = self
         tableView.delegate = self
         tableView.register(UINib(nibName: DatabaseTableViewCell.reuseIdentifier, bundle: nil), forCellReuseIdentifier: DatabaseTableViewCell.reuseIdentifier)
+        customiseNavigation()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        setupView()
         viewModel.getTables()
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         customiseNavigation()
+        setupView()
     }
     
     private func setupView() {
@@ -42,15 +43,17 @@ class TablesViewController: UIViewController {
         
         let rightButton = UIButton()
         rightButton.setTitle(" 📗 Create Query  ", for: .normal)
-        rightButton.titleLabel?.font = UIFont(name: "Helvetica", size: 14)
-        rightButton.setTitleColor(.lightGray, for: .normal)
-        rightButton.layer.borderWidth = 0.0
-        rightButton.layer.cornerRadius = 5
-        rightButton.layer.borderColor = UIColor.darkGray.cgColor
-        rightButton.backgroundColor = UIColor.darkGray
+        rightButton.titleLabel?.font = UIFont(name: "Helvetica", size: 15)
+        rightButton.setTitleColor(.label, for: .normal)
+        rightButton.layer.borderWidth = 1.0
+        rightButton.layer.cornerRadius = 6
+        rightButton.layer.borderColor = UIColor.label.cgColor
+        rightButton.backgroundColor = UIColor.clear
         rightButton.addTarget(self, action: #selector(createQuery), for: .touchUpInside)
         let rightBarButton = UIBarButtonItem(customView: rightButton)
         navigationItem.rightBarButtonItem = rightBarButton
+        
+        navigationItem.backButtonTitle = "None"
     }
     
     @objc func createQuery() {
@@ -98,7 +101,12 @@ extension TablesViewController: UITableViewDelegate {
         guard let table = dataSource.itemIdentifier(for: indexPath) else {
             return
         }
+        navigationItem.backButtonTitle = table.name
         viewModel.selectTable(table: table)
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 60
     }
 }
 
@@ -126,7 +134,7 @@ extension TablesViewController: TableViewsModelDelegate {
             present(mail, animated: true)
         } else {
             // show failure alert
-            print("Error")
+            showErrorAlert(error: "Cannot Send Mail")
         }
     }
     

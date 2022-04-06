@@ -14,11 +14,16 @@ class AttributeTableViewCell: UITableViewCell {
     static var reuseIdentifier = "AttributeTableViewCell"
     var attribute: Attribute? {
         didSet {
-            attributeNameLabel.text = attribute?.name
-            typeLabel.text = attribute?.type.rawValue
+            guard let attribute = attribute else {
+                return
+            }
+            attributeNameLabel.text = attribute.name
+            typeLabel.text = attribute.type.rawValue
             contentView.layer.cornerRadius = 5.0
-            if attribute?.isPrimaryKey ?? false {
+            if attribute.isPrimaryKey {
                 typeBarColor.backgroundColor = .red
+            } else if (attribute.foreignKeyConstraint != nil) != nil ?? false {
+                typeBarColor.backgroundColor = .yellow
             }
         }
     }
@@ -34,4 +39,8 @@ class AttributeTableViewCell: UITableViewCell {
         // Configure the view for the selected state
     }
     
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        contentView.frame = contentView.frame.inset(by: UIEdgeInsets(top: 7, left: 7, bottom: 7, right: 7))
+    }
 }

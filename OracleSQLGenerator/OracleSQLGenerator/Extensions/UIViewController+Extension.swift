@@ -11,7 +11,6 @@ extension UIViewController {
     func customiseNavigation() {
         let appearance = UINavigationBarAppearance()
         appearance.configureWithOpaqueBackground()
-//        appearance.backgroundColor = UIColor.systemGray4
         appearance.titleTextAttributes = [.foregroundColor: UIColor.lightText]
         navigationItem.standardAppearance = appearance
         navigationItem.scrollEdgeAppearance = appearance

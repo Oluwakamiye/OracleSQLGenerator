@@ -10,20 +10,37 @@ import UIKit
 class EditAttributeViewController: UIViewController {
     @IBOutlet weak private(set) var attributeNameText: UITextField!
     @IBOutlet weak private(set) var attributeTypeText: UITextField!
-    @IBOutlet weak var nullConstraintButton: UIButton!
-    @IBOutlet weak var uniqueConstraintButton: UIButton!
-    @IBOutlet weak var primaryKeyConstraintButton: UIButton!
-    @IBOutlet weak var saveButton: UIButton!
-    @IBOutlet weak var cancelButton: UIButton!
+    @IBOutlet weak private(set) var nullConstraintButton: UIButton!
+    @IBOutlet weak private(set) var uniqueConstraintButton: UIButton!
+    @IBOutlet weak private(set) var primaryKeyConstraintButton: UIButton!
+    
+    @IBOutlet weak private(set) var addForeignKeyButtonView: UIView!
+    @IBOutlet weak private(set) var foreignKeyDetailsStackView: UIStackView!
+    @IBOutlet weak private(set) var foreignKeyDetailLabel: UILabel!
     
     private var viewModel = EditAttributeViewModel()
     private var typePickerView = UIPickerView()
+    private var tablePicker = UIPickerView()
+    private var keyPicker = UIPickerView()
+    private var foreignTableText: UITextField?
+    private var foreignAttributeText: UITextField?
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
         viewModel.delegate = self
+        // Setting Tags
+        typePickerView.tag = 0
+        tablePicker.tag = 1
+        keyPicker.tag = 2
+        // PickerView Delegates
         typePickerView.delegate = viewModel
         typePickerView.dataSource = viewModel
+        tablePicker.delegate = viewModel
+        tablePicker.dataSource = viewModel
+        keyPicker.delegate = viewModel
+        keyPicker.dataSource = viewModel
+        // TextView Delegate
         attributeNameText.delegate = viewModel
         attributeTypeText.delegate = viewModel
         navigationController?.navigationBar.prefersLargeTitles = false
@@ -34,12 +51,24 @@ class EditAttributeViewController: UIViewController {
         viewModel.loadAttributeInformation()
     }
     
+    override func viewWillDisappear(_ animated: Bool) {
+        navigationController?.navigationBar.prefersLargeTitles = true
+    }
+    
     private func setupViews() {
         attributeTypeText.inputView = typePickerView
-        saveButton.layer.cornerRadius = 5.0
-        cancelButton.layer.cornerRadius = 5.0
-        saveButton.layer.borderColor = UIColor.darkGray.cgColor
-        saveButton.layer.borderWidth = 1.0
+        
+        let rightButton = UIButton()
+        rightButton.setTitle("  Save Changes  ", for: .normal)
+        rightButton.titleLabel?.font = UIFont(name: "Helvetica", size: 15)
+        rightButton.setTitleColor(.white, for: .normal)
+        rightButton.layer.borderWidth = 0.0
+        rightButton.layer.cornerRadius = 6
+        rightButton.layer.borderColor = UIColor.label.cgColor
+        rightButton.backgroundColor = UIColor.systemGreen
+        rightButton.addTarget(self, action: #selector(saveChangesTapped), for: .touchUpInside)
+        let rightBarButton = UIBarButtonItem(customView: rightButton)
+        navigationItem.rightBarButtonItem = rightBarButton
     }
     
     @IBAction func toggleNullConstraintTapped(_ sender: UIButton) {
@@ -54,7 +83,7 @@ class EditAttributeViewController: UIViewController {
         viewModel.togglePrimaryKeyConstraint()
     }
     
-    @IBAction func saveChangesTapped(_ sender: UIButton) {
+    @objc func saveChangesTapped() {
         let alertController = UIAlertController(title: "Save Changes", message: "Save changes made to attribute", preferredStyle: .alert)
         let saveAction = UIAlertAction(title: "Save changes", style: .default, handler: {
             _ in
@@ -68,6 +97,34 @@ class EditAttributeViewController: UIViewController {
     
     @IBAction func cancelTapped(_ sender: UIButton) {
         viewModel.cancelAttributeChanges()
+    }
+    
+    @IBAction func addForeignKeyButtonTapped(_ sender: UIButton) {
+        viewModel.updateTablesList()
+        // show alert
+        let alert = UIAlertController(title: "Add New Foreign Key", message: "Name of new Attribute", preferredStyle: .alert)
+        alert.addTextField()
+        alert.addTextField()
+        guard let foreignTableTextField = alert.textFields?.first,
+              let foreignAttributeTextField = alert.textFields?[1] else {
+            return
+        }
+        foreignTableText = foreignTableTextField
+        foreignAttributeText = foreignAttributeTextField
+        foreignTableTextField.placeholder = "Select table"
+        foreignAttributeTextField.placeholder = "Select Foreign Key"
+        foreignTableTextField.inputView = tablePicker
+        foreignAttributeTextField.inputView = keyPicker
+        
+        let createAction = UIAlertAction(title: "Create", style: .default, handler: {
+            _ in
+            self.viewModel.createForeignKeyConstraint()
+        })
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
+        
+        alert.addAction(createAction)
+        alert.addAction(cancelAction)
+        present(alert, animated: true)
     }
     
     static func makeSelf(databaseID: String, tableID: String, attributeID: String) -> EditAttributeViewController? {
@@ -121,12 +178,51 @@ extension EditAttributeViewController: EditAttributeViewModelDelegate {
         }
     }
     
-    func updateTypeText(text: String) {
-        attributeTypeText.text = text
+    func updateTypeText(associatedPickerTag: Int, text: String) {
+        switch associatedPickerTag {
+        case 0:
+            attributeTypeText.text = text
+        case 1:
+            foreignTableText?.text = text
+        case 2:
+            foreignAttributeText?.text = text
+        default:
+            return
+        }
     }
     
-    func giveUpResponder() {
-        resignFirstResponder()
+    func giveUpResponder(associatedPickerTag: Int) {
+        switch associatedPickerTag {
+        case 0:
+            attributeTypeText.resignFirstResponder()
+        case 1:
+            foreignTableText?.resignFirstResponder()
+        case 2:
+            foreignAttributeText?.resignFirstResponder()
+        default:
+            return
+        }
+    }
+    
+    func shouldDisplayForeignKeyText(shouldShow: Bool) {
+        addForeignKeyButtonView.isHidden = shouldShow
+        foreignKeyDetailsStackView.isHidden = !shouldShow
+    }
+    
+    func updateForeignKeyLabelText(text: String) {
+        foreignKeyDetailLabel.text = text
+    }
+    
+    func reloadTablesPicker() {
+        tablePicker.reloadAllComponents()
+    }
+    
+    func reloadAttributesPicker() {
+        keyPicker.reloadAllComponents()
+    }
+    
+    func shouldShowAttributesPicker(shouldShow: Bool) {
+        foreignAttributeText?.isHidden = !shouldShow
     }
     
     func showError(errorTitle: String, errorDetail: String?) {

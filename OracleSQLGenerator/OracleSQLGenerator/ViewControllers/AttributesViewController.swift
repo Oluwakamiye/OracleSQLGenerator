@@ -34,6 +34,7 @@ class AttributesViewController: UIViewController {
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        customiseNavigation()
         setupView()
     }
     
@@ -95,7 +96,12 @@ extension AttributesViewController: UITableViewDelegate {
         guard let attribute = dataSource.itemIdentifier(for: indexPath) else {
             return
         }
+        navigationItem.backButtonTitle = "Attributes"
         viewModel.selectAttributeForEditing(attribute: attribute)
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 50
     }
 }
 
@@ -119,13 +125,14 @@ extension AttributesViewController: UIPickerViewDelegate, UIPickerViewDataSource
             return
         }
         attributeTypeText.text = AttributeType.allCases[row].rawValue
+        attributeTypeText.resignFirstResponder()
     }
 }
 
 // MARK: ViewModel Delegates
 extension AttributesViewController: AttributesViewModelDelegate {
     func updateNavigationTitle(title: String) {
-        navigationItem.title = "\(title) Attributes"
+        navigationItem.title = "Attributes"
     }
     
     func updateAttributesList(attributes: [Attribute], animatingDifferences: Bool) {

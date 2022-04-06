@@ -32,7 +32,11 @@ final class DatabaseViewModel: NSObject {
             delegate.showError(errorTitle: "Cannot Create Database", errorDetail: name?.isEmpty ?? false ? "Database name cannot be empty" : "Database name exists already")
             return
         }
-        let database = Database(name: name!, tables: [])
+        var name = name!.capitalized
+        name = name.trimming(spaces: .leadingAndTrailing)
+        name = name.replacingOccurrences(of: "  ", with: " ")
+        name = name.replacingOccurrences(of: " ", with: "_")
+        let database = Database(name: name, tables: [])
         record.databases.append(database)
         Helper.shared.record = record
         delegate.updateDatabaseList(databases: record.databases, animatingDifferences: true)
