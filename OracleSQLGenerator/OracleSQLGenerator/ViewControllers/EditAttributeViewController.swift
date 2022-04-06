@@ -34,10 +34,14 @@ class EditAttributeViewController: UIViewController {
         viewModel.loadAttributeInformation()
     }
     
+    override func viewWillDisappear(_ animated: Bool) {
+        navigationController?.navigationBar.prefersLargeTitles = true
+    }
+    
     private func setupViews() {
         attributeTypeText.inputView = typePickerView
-        saveButton.layer.cornerRadius = 5.0
-        cancelButton.layer.cornerRadius = 5.0
+        saveButton.layer.cornerRadius = 6.0
+        cancelButton.layer.cornerRadius = 6.0
         saveButton.layer.borderColor = UIColor.darkGray.cgColor
         saveButton.layer.borderWidth = 1.0
     }

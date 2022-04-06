@@ -20,7 +20,6 @@ enum AttributeType: String, CaseIterable, Codable {
     case date = "date"
 }
 
-
 class Attribute: Hashable, Codable {
     var id: String = "\(UUID())"
     var name: String
@@ -28,6 +27,7 @@ class Attribute: Hashable, Codable {
     var isNull: Bool
     var isUnique: Bool
     var type: AttributeType
+    var foreignKeyConstraints: [ForeignKeyRelationConstraint] = []
     
     func hash(into hasher: inout Hasher) {
         hasher.combine(id)
@@ -104,7 +104,6 @@ class ForeignKeyRelationConstraint: Hashable, Codable {
         self.foreignKeyAttribute = foreignKeyAttribute
     }
 }
-
 
 class Record: Codable {
     var databases: [Database]

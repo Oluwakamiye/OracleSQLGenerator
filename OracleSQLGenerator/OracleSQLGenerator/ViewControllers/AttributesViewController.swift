@@ -34,6 +34,7 @@ class AttributesViewController: UIViewController {
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        customiseNavigation()
         setupView()
     }
     
@@ -97,6 +98,10 @@ extension AttributesViewController: UITableViewDelegate {
         }
         viewModel.selectAttributeForEditing(attribute: attribute)
     }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 50
+    }
 }
 
 // MARK: PickerView Delegate
@@ -125,7 +130,7 @@ extension AttributesViewController: UIPickerViewDelegate, UIPickerViewDataSource
 // MARK: ViewModel Delegates
 extension AttributesViewController: AttributesViewModelDelegate {
     func updateNavigationTitle(title: String) {
-        navigationItem.title = "\(title) Attributes"
+        navigationItem.title = "\(title) - attributes"
     }
     
     func updateAttributesList(attributes: [Attribute], animatingDifferences: Bool) {

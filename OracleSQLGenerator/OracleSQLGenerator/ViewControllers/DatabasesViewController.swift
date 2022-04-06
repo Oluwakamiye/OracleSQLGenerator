@@ -16,31 +16,22 @@ class DatabasesViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-//        Helper.saveRecordToDisk(record: Record(databases: getDatabases(), lastModified: Date()))
         viewModel.delegate = self
         tableView.delegate = self
         tableView.register(UINib(nibName: DatabaseTableViewCell.reuseIdentifier, bundle: nil), forCellReuseIdentifier: DatabaseTableViewCell.reuseIdentifier)
-        navigationItem.title = "Databases"
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        viewModel.getDatabases()
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        setupView()
+        navigationItem.title = "Databases"
         customiseNavigation()
-        viewModel.getDatabases()
+        setupView()
     }
-    
-//    private func getDatabases() -> [Database] {
-//        let table1 = Table(name: "ASA")
-//        let table2 = Table(name: "Wizkid")
-//        let table3 = Table(name: "Davido")
-//        let table4 = Table(name: "Burna")
-//        let table5 = Table(name: "Ric Hassani")
-//        
-//        let database = Database(name: "Grammy Artists", tables: [table1, table2, table3])
-//        let database2 = Database(name: "World Cup Artists", tables: [table4, table5])
-//        return [database, database2]
-//    }
     
     private func setupView() {
         let toolBarButton = UIBarButtonItem(title: "➕ Add Database", style: .done, target: self, action: #selector(addDatabase))
@@ -87,6 +78,10 @@ extension DatabasesViewController: UITableViewDelegate {
             return
         }
         navigationController?.pushViewController(destinationVC, animated: true)
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 60
     }
 }
 
