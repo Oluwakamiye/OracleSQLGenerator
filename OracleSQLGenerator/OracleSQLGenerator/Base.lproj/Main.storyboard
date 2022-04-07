@@ -204,10 +204,10 @@
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ue6-Qd-KO6">
-                                                <rect key="frame" x="0.0" y="32.5" width="130" height="31"/>
+                                                <rect key="frame" x="0.0" y="32.5" width="156" height="31"/>
                                                 <color key="tintColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <state key="normal" title="Button"/>
-                                                <buttonConfiguration key="configuration" style="plain" image="circle" catalog="system" title="     Is Nullable">
+                                                <buttonConfiguration key="configuration" style="plain" image="circle" catalog="system" title="     Is Not Nullable">
                                                     <fontDescription key="titleFontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="14"/>
                                                 </buttonConfiguration>
                                                 <connections>

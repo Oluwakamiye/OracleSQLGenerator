@@ -50,12 +50,20 @@ final class TableViewsModel: NSObject {
         delegate.updateTableList(tables: database.tables, animatingDifferences: true)
     }
     
-    func createQuery() {
+    func createTableQuery() {
         guard let delegate = delegate,
               let database = record.databases.first(where: {$0.id == databaseID}) else {
             return
         }
-        delegate.displayMailWindow(withQuery: SQLGenerator.makeSQL(database: database), databaseName: database.name)
+        delegate.displayMailWindow(withQuery: SQLGenerator.getCreateSQLQueries(database: database), databaseName: database.name)
+    }
+    
+    func createTableWithInsertQuery() {
+        guard let delegate = delegate,
+              let database = record.databases.first(where: {$0.id == databaseID}) else {
+            return
+        }
+        delegate.displayMailWindow(withQuery: SQLGenerator.getCreateSQLQueries(database: database, includeInsertQueries: true), databaseName: database.name)
     }
     
     func selectTable(table: Table) {

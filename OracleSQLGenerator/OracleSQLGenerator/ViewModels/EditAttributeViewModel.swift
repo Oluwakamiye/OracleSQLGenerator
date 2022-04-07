@@ -54,12 +54,14 @@ final class EditAttributeViewModel: NSObject {
         else {
             return
         }
+        
         self.database = database
         attributeCopy = attribute
         self.tables = database.tables
         delegate.updateViewsWithAttribute(attribute: attributeCopy)
         delegate.updateButtonImages(attribute: &attributeCopy)
         delegate.shouldDisplayForeignKeyText(shouldShow: attributeCopy.foreignKeyConstraint != nil)
+        delegate.updateForeignKeyLabelText(text: getConstraintText(attribute: attributeCopy))
     }
     
     func toggleAttributeNullConstraint() {
@@ -114,7 +116,7 @@ final class EditAttributeViewModel: NSObject {
             delegate?.showError(errorTitle: "Save Failed", errorDetail: "Couldn't save changes")
             return
         }
-        name = name.capitalized
+        name = name.lowercased()
         name = name.trimming(spaces: .leadingAndTrailing)
         name = name.replacingOccurrences(of: "  ", with: " ")
         name = name.replacingOccurrences(of: " ", with: "_")
@@ -152,6 +154,17 @@ final class EditAttributeViewModel: NSObject {
         delegate.shouldDisplayForeignKeyText(shouldShow: self.attributeCopy.foreignKeyConstraint != nil)
         let text = "REFERENCES COLUMN(\(primaryKeyAttribute.name)) FROM TABLE (\(primaryKeyTable.name))"
         delegate.updateForeignKeyLabelText(text: text)
+    }
+    
+    private func getConstraintText(attribute: Attribute) -> String {
+        guard let constraint = attribute.foreignKeyConstraint,
+              let database = database,
+              let primaryKeyTable = database.tables.first(where: {$0.id == constraint.primaryKeyTableID}),
+              let primaryKeyAttribute = primaryKeyTable.attributes.first(where: {$0.id == constraint.primaryKeyAttributeID})  else {
+            return ""
+        }
+        let text = "REFERENCES COLUMN(\(primaryKeyAttribute.name)) FROM TABLE (\(primaryKeyTable.name))"
+        return text
     }
     
     func updateTablesList() {

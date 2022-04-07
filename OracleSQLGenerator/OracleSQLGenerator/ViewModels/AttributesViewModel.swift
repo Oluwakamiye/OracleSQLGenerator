@@ -51,7 +51,7 @@ final class AttributesViewModel: NSObject {
         name = name.replacingOccurrences(of: "  ", with: " ")
         name = name.replacingOccurrences(of: " ", with: "_")
         let isPrimaryKeyInferred = name.caseInsensitiveCompare("ID") == .orderedSame || name.caseInsensitiveCompare("\(table.name)_ID") == .orderedSame
-        let attribute = Attribute(name: name, isPrimaryKey: isPrimaryKeyInferred, isNullable: !isPrimaryKeyInferred, isUnique: !isPrimaryKeyInferred, type: type)
+        let attribute = Attribute(name: name, isPrimaryKey: isPrimaryKeyInferred, isNullable: !isPrimaryKeyInferred, isUnique: false, type: type)
         
         table.attributes.append(attribute)
         database.tables[tableIndex] = table

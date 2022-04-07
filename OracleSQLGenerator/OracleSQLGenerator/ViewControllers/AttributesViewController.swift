@@ -17,6 +17,7 @@ class AttributesViewController: UIViewController {
     
     private var attributeTypeText: UITextField?
     private var viewModel = AttributesViewModel()
+    private var tableName = ""
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -113,7 +114,7 @@ extension AttributesViewController: UITableViewDelegate {
         guard let attribute = dataSource.itemIdentifier(for: indexPath) else {
             return
         }
-        navigationItem.backButtonTitle = "Attributes"
+        navigationItem.backButtonTitle = tableName
         viewModel.selectAttributeForEditing(attribute: attribute)
     }
     
@@ -150,6 +151,7 @@ extension AttributesViewController: UIPickerViewDelegate, UIPickerViewDataSource
 extension AttributesViewController: AttributesViewModelDelegate {
     func updateNavigationTitle(title: String) {
         navigationItem.title = "Attributes"
+        tableName = title
     }
     
     func updateAttributesList(attributes: [Attribute], animatingDifferences: Bool) {
