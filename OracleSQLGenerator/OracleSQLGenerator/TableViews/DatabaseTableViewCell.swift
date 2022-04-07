@@ -27,8 +27,13 @@ class DatabaseTableViewCell: UITableViewCell {
             guard let table = table else {
                 return
             }
+            let noOfPrimaryKeys = table.attributes.filter({$0.isPrimaryKey == true}).count
+            let noOfForeignKeys = table.attributes.filter({$0.foreignKeyConstraint != nil}).count
+            var detailText = "\(table.attributes.count) attribute\(table.attributes.count != 1 ? "s":" ")"
+            detailText += "   ·  \(noOfPrimaryKeys) PK\(noOfPrimaryKeys != 1 ? "s":" ")"
+            detailText += "   ·  \(noOfForeignKeys) FK\(noOfForeignKeys != 1 ? "s":"")"
             databaseLabel.text = "\(table.name)"
-            detailLabel.text = "\(table.attributes.count) attribute\(table.attributes.count != 1 ? "s":"")"
+            detailLabel.text = detailText
             contentView.layer.cornerRadius = 5.0
         }
     }

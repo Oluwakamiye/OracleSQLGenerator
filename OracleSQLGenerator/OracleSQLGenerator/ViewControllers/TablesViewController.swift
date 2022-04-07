@@ -49,13 +49,30 @@ class TablesViewController: UIViewController {
         rightButton.layer.cornerRadius = 6
         rightButton.layer.borderColor = UIColor.label.cgColor
         rightButton.backgroundColor = UIColor.clear
-        rightButton.addTarget(self, action: #selector(createQuery), for: .touchUpInside)
+        rightButton.addTarget(self, action: #selector(showCreateQueryActionSheet), for: .touchUpInside)
         let rightBarButton = UIBarButtonItem(customView: rightButton)
         navigationItem.rightBarButtonItem = rightBarButton
     }
     
-    @objc func createQuery() {
-        viewModel.createQuery()
+    @objc func showCreateQueryActionSheet() {
+        let actionSheet = UIAlertController(title: "Create Query", message: "Choose what queries to create", preferredStyle: .actionSheet)
+        
+        let createSQLQueryAction = UIAlertAction(title: "Create Table", style: .default, handler: {
+            _ in
+            self.viewModel.createTableQuery()
+        })
+        
+        let createSQLWithInsertQueryAction = UIAlertAction(title: "Create Table + Insert", style: .default, handler: {
+            _ in
+            self.viewModel.createTableWithInsertQuery()
+        })
+        
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
+        
+        actionSheet.addAction(createSQLQueryAction)
+        actionSheet.addAction(createSQLWithInsertQueryAction)
+        actionSheet.addAction(cancelAction)
+        present(actionSheet, animated: true)
     }
     
     @objc func addNewTable() {

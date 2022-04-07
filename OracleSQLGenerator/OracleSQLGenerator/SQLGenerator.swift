@@ -10,13 +10,16 @@ import Foundation
 struct SQLGenerator {
     private static var databaseID = ""
     
-    static func makeSQL(database: Database) -> String {
+    static func getCreateSQLQueries(database: Database, includeInsertQueries: Bool = false) -> String {
         var SQLString = ""
         databaseID = database.id
         for table in database.tables {
             SQLString = SQLString.add("-- Drop and Create \(table.name.capitalized) Table")
             SQLString = SQLString.add(makeSQL(table: table))
-            SQLString = SQLString.add("")
+            if includeInsertQueries {
+                SQLString = SQLString.add(generateInsertQueryForTable(table: table))
+            }
+            SQLString = SQLString.add("").add("")
         }
         return SQLString
     }
@@ -34,7 +37,7 @@ struct SQLGenerator {
         }
         sql = sql.add(contraintSQL)
         //        sql = sql.add(");")
-        sql += ");"
+        sql = sql.add(");")
         return sql
     }
     
@@ -93,7 +96,7 @@ struct SQLGenerator {
         let tableName = table.name.uppercased()
         var sql = "INSERT INTO   \(tableName) ("
         for attribute in table.attributes {
-            sql += attribute.name.capitalized
+            sql += attribute.name.uppercased()
             sql += attribute == table.attributes.last ? "" : ", "
         }
         sql += ")"
