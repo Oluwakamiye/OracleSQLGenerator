@@ -12,10 +12,12 @@ enum Section {
 }
 
 enum AttributeType: String, CaseIterable, Codable {
-    case integer = "int"
-    case varcharLong = "varchar(255)"
-    case varcharShort = "varchar(10)"
-    case floatPoint = "float"
+    case number = "number"
+    case numberShort = "number (7)"
+    case numberShorter = "number (3)"
+    case varcharLong = "varchar (255)"
+    case varcharShort = "varchar (10)"
+    case amount = "float"
     case boolean = "bool"
     case date = "date"
 }
@@ -24,7 +26,7 @@ class Attribute: Hashable, Codable, NSCopying {
     var id: String = "\(UUID())"
     var name: String
     var isPrimaryKey: Bool
-    var isNull: Bool
+    var isNullable: Bool
     var isUnique: Bool
     var type: AttributeType
     var foreignKeyConstraint: ForeignKeyRelationConstraint? = nil
@@ -37,17 +39,17 @@ class Attribute: Hashable, Codable, NSCopying {
         lhs.id == rhs.id
     }
     
-    init(name: String, isPrimaryKey: Bool, isNull: Bool, isUnique: Bool, type: AttributeType, foreignKeyConstraint: ForeignKeyRelationConstraint? = nil) {
+    init(name: String, isPrimaryKey: Bool, isNullable: Bool, isUnique: Bool, type: AttributeType, foreignKeyConstraint: ForeignKeyRelationConstraint? = nil) {
         self.name = name
         self.isPrimaryKey = isPrimaryKey
-        self.isNull = isNull
+        self.isNullable = isNullable
         self.isUnique = isUnique
         self.type = type
         self.foreignKeyConstraint = foreignKeyConstraint
     }
     
     func copy(with zone: NSZone? = nil) -> Any {
-        let copy = Attribute(name: name, isPrimaryKey: isPrimaryKey, isNull: isNull, isUnique: isUnique, type: type, foreignKeyConstraint: foreignKeyConstraint)
+        let copy = Attribute(name: name, isPrimaryKey: isPrimaryKey, isNullable: isNullable, isUnique: isUnique, type: type, foreignKeyConstraint: foreignKeyConstraint)
         return copy
     }
 }

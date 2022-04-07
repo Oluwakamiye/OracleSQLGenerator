@@ -13,8 +13,8 @@ class EditAttributeViewController: UIViewController {
     @IBOutlet weak private(set) var nullConstraintButton: UIButton!
     @IBOutlet weak private(set) var uniqueConstraintButton: UIButton!
     @IBOutlet weak private(set) var primaryKeyConstraintButton: UIButton!
-    
     @IBOutlet weak private(set) var addForeignKeyButtonView: UIView!
+    @IBOutlet weak private(set) var addFKContraintKeyButton: UIButton!
     @IBOutlet weak private(set) var foreignKeyDetailsStackView: UIStackView!
     @IBOutlet weak private(set) var foreignKeyDetailLabel: UILabel!
     
@@ -58,6 +58,16 @@ class EditAttributeViewController: UIViewController {
     private func setupViews() {
         attributeTypeText.inputView = typePickerView
         
+        foreignKeyDetailsStackView.layer.borderColor = UIColor.label.cgColor
+        foreignKeyDetailsStackView.layer.borderWidth = 1.0
+        foreignKeyDetailsStackView.layer.cornerRadius = 6
+        foreignKeyDetailsStackView.isLayoutMarginsRelativeArrangement = true
+        foreignKeyDetailsStackView.layoutMargins = UIEdgeInsets(top: 1, left: 5, bottom: 1, right: 1)
+        
+        addFKContraintKeyButton.layer.borderColor = UIColor.systemYellow.cgColor
+        addFKContraintKeyButton.layer.borderWidth = 1.0
+        addFKContraintKeyButton.layer.cornerRadius = 6
+        
         let rightButton = UIButton()
         rightButton.setTitle("  Save Changes  ", for: .normal)
         rightButton.titleLabel?.font = UIFont(name: "Helvetica", size: 15)
@@ -87,7 +97,7 @@ class EditAttributeViewController: UIViewController {
         let alertController = UIAlertController(title: "Save Changes", message: "Save changes made to attribute", preferredStyle: .alert)
         let saveAction = UIAlertAction(title: "Save changes", style: .default, handler: {
             _ in
-            self.viewModel.saveAttributeChanges()
+            self.viewModel.saveAttributeChanges(name: self.attributeNameText.text)
         })
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
         alertController.addAction(saveAction)
@@ -154,19 +164,19 @@ extension EditAttributeViewController: EditAttributeViewModelDelegate {
         if attribute.isPrimaryKey {
             primaryKeyConstraintButton.setImage(UIImage(systemName: "checkmark.circle.fill"), for: .normal)
             attribute.isUnique = false
-            attribute.isNull = true
+            attribute.isNullable = true
             primaryKeyConstraintButton.tintColor = .systemGreen
         } else {
             primaryKeyConstraintButton.setImage(UIImage(systemName: "circle"), for: .normal)
             primaryKeyConstraintButton.tintColor = .darkGray
         }
         
-        if attribute.isNull {
-            nullConstraintButton.setImage(UIImage(systemName: "checkmark.circle.fill"), for: .normal)
-            nullConstraintButton.tintColor = .systemGreen
-        } else {
+        if attribute.isNullable {
             nullConstraintButton.setImage(UIImage(systemName: "circle"), for: .normal)
             nullConstraintButton.tintColor = .darkGray
+        } else {
+            nullConstraintButton.setImage(UIImage(systemName: "checkmark.circle.fill"), for: .normal)
+            nullConstraintButton.tintColor = .systemGreen
         }
         
         if attribute.isUnique {

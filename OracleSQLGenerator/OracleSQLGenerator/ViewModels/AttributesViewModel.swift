@@ -9,6 +9,7 @@ import Foundation
 
 protocol AttributesViewModelDelegate: BaseModelDelegate {
     func updateNavigationTitle(title: String)
+    func displayMailWindow(withQuery: String, tableName: String)
     func updateAttributesList(attributes: [Attribute], animatingDifferences: Bool) 
     func goToEditAttributePage(databaseID: String, tableID: String, attributeID: String)
 }
@@ -49,14 +50,23 @@ final class AttributesViewModel: NSObject {
         name = name.trimming(spaces: .leadingAndTrailing)
         name = name.replacingOccurrences(of: "  ", with: " ")
         name = name.replacingOccurrences(of: " ", with: "_")
-        let isPrimaryKeyInferred = name.caseInsensitiveCompare("ID") == .orderedSame
-        let attribute = Attribute(name: name, isPrimaryKey: isPrimaryKeyInferred, isNull: isPrimaryKeyInferred, isUnique: !isPrimaryKeyInferred, type: type)
+        let isPrimaryKeyInferred = name.caseInsensitiveCompare("ID") == .orderedSame || name.caseInsensitiveCompare("\(table.name)_ID") == .orderedSame
+        let attribute = Attribute(name: name, isPrimaryKey: isPrimaryKeyInferred, isNullable: !isPrimaryKeyInferred, isUnique: !isPrimaryKeyInferred, type: type)
         
         table.attributes.append(attribute)
         database.tables[tableIndex] = table
         record.databases[databaseIndex] = database
         Helper.shared.record = record
         delegate.updateAttributesList(attributes: table.attributes, animatingDifferences: true)
+    }
+    
+    func createInsertQuery() {
+        guard let delegate = delegate,
+              let database = record.databases.first(where: {$0.id == databaseID}),
+              let table = database.tables.first(where: {$0.id == tableID}) else {
+            return
+        }
+        delegate.displayMailWindow(withQuery: SQLGenerator.generateInsertQueryForTable(table: table), tableName: table.name)
     }
     
     func updateTableTitle() {

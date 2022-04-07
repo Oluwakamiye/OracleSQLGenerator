@@ -23,7 +23,7 @@ class AttributeTableViewCell: UITableViewCell {
             if attribute.isPrimaryKey {
                 typeBarColor.backgroundColor = .red
             } else if (attribute.foreignKeyConstraint != nil) != nil ?? false {
-                typeBarColor.backgroundColor = .yellow
+                typeBarColor.backgroundColor = .systemYellow
             }
         }
     }

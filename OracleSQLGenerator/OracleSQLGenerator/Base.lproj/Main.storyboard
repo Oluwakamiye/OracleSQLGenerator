@@ -165,7 +165,7 @@
                                                     <constraint firstAttribute="height" constant="45" id="xOp-A9-c4d"/>
                                                 </constraints>
                                                 <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="16"/>
-                                                <textInputTraits key="textInputTraits" enablesReturnKeyAutomatically="YES"/>
+                                                <textInputTraits key="textInputTraits" spellCheckingType="no" enablesReturnKeyAutomatically="YES"/>
                                             </textField>
                                         </subviews>
                                     </stackView>
@@ -191,11 +191,11 @@
                                     </stackView>
                                 </subviews>
                             </stackView>
-                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="15" translatesAutoresizingMaskIntoConstraints="NO" id="TrL-Vf-1jJ">
-                                <rect key="frame" x="10" y="236" width="394" height="274.5"/>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="25" translatesAutoresizingMaskIntoConstraints="NO" id="TrL-Vf-1jJ">
+                                <rect key="frame" x="10" y="236" width="394" height="278.5"/>
                                 <subviews>
-                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="top" spacing="15" translatesAutoresizingMaskIntoConstraints="NO" id="a94-9R-CjG">
-                                        <rect key="frame" x="0.0" y="0.0" width="394" height="157.5"/>
+                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="top" spacing="13" translatesAutoresizingMaskIntoConstraints="NO" id="a94-9R-CjG">
+                                        <rect key="frame" x="0.0" y="0.0" width="394" height="151.5"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Constraints" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="G8Q-6x-SDY">
                                                 <rect key="frame" x="0.0" y="0.0" width="83.5" height="19.5"/>
@@ -204,10 +204,10 @@
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ue6-Qd-KO6">
-                                                <rect key="frame" x="0.0" y="34.5" width="138" height="31"/>
+                                                <rect key="frame" x="0.0" y="32.5" width="130" height="31"/>
                                                 <color key="tintColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <state key="normal" title="Button"/>
-                                                <buttonConfiguration key="configuration" style="plain" image="circle" catalog="system" title="     Can be Null">
+                                                <buttonConfiguration key="configuration" style="plain" image="circle" catalog="system" title="     Is Nullable">
                                                     <fontDescription key="titleFontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="14"/>
                                                 </buttonConfiguration>
                                                 <connections>
@@ -215,7 +215,7 @@
                                                 </connections>
                                             </button>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="KyZ-Wk-PYG">
-                                                <rect key="frame" x="0.0" y="80.5" width="165.5" height="31"/>
+                                                <rect key="frame" x="0.0" y="76.5" width="165.5" height="31"/>
                                                 <color key="tintColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <state key="normal" title="Button"/>
                                                 <buttonConfiguration key="configuration" style="plain" image="circle" catalog="system" title="     Must Be Unique">
@@ -226,7 +226,7 @@
                                                 </connections>
                                             </button>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="H02-He-alc">
-                                                <rect key="frame" x="0.0" y="126.5" width="155" height="31"/>
+                                                <rect key="frame" x="0.0" y="120.5" width="155" height="31"/>
                                                 <color key="tintColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <state key="normal" title="Button"/>
                                                 <buttonConfiguration key="configuration" style="plain" image="circle" catalog="system" title="     Is Primary Key">
@@ -239,16 +239,17 @@
                                         </subviews>
                                     </stackView>
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="2" translatesAutoresizingMaskIntoConstraints="NO" id="C7b-Gt-szA">
-                                        <rect key="frame" x="0.0" y="172.5" width="394" height="102"/>
+                                        <rect key="frame" x="0.0" y="176.5" width="394" height="102"/>
                                         <subviews>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="KhI-g2-FDw">
                                                 <rect key="frame" x="0.0" y="0.0" width="394" height="45"/>
                                                 <subviews>
                                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="b6Q-NE-fAR">
-                                                        <rect key="frame" x="97" y="0.0" width="200.5" height="45"/>
+                                                        <rect key="frame" x="59" y="0.0" width="276" height="45"/>
                                                         <constraints>
                                                             <constraint firstAttribute="height" constant="45" id="MME-HB-FJW"/>
                                                         </constraints>
+                                                        <color key="tintColor" systemColor="labelColor"/>
                                                         <state key="normal" title="Button"/>
                                                         <buttonConfiguration key="configuration" style="plain" title="Add Foreign Key Constraint"/>
                                                         <connections>
@@ -262,23 +263,23 @@
                                                     <constraint firstItem="b6Q-NE-fAR" firstAttribute="top" secondItem="KhI-g2-FDw" secondAttribute="top" id="dWb-Ak-ltI"/>
                                                     <constraint firstAttribute="bottom" secondItem="b6Q-NE-fAR" secondAttribute="bottom" id="epP-dK-1R6"/>
                                                     <constraint firstAttribute="height" constant="45" id="fD5-eg-DrY"/>
-                                                    <constraint firstItem="b6Q-NE-fAR" firstAttribute="width" secondItem="KhI-g2-FDw" secondAttribute="width" multiplier="0.508883" id="oF0-0O-aHW"/>
+                                                    <constraint firstItem="b6Q-NE-fAR" firstAttribute="width" secondItem="KhI-g2-FDw" secondAttribute="width" multiplier="0.7" id="oF0-0O-aHW"/>
                                                 </constraints>
                                             </view>
                                             <stackView opaque="NO" contentMode="scaleToFill" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="GHP-me-rKW">
                                                 <rect key="frame" x="0.0" y="47" width="394" height="55"/>
                                                 <subviews>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="REFERENCES COLUMN (ID) FROM TABLE (VEHICLES)" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="nXw-7P-aBu">
-                                                        <rect key="frame" x="0.0" y="0.0" width="359" height="55"/>
+                                                        <rect key="frame" x="0.0" y="0.0" width="364" height="55"/>
                                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                         <nil key="textColor"/>
                                                         <nil key="highlightedColor"/>
                                                     </label>
                                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="yti-1d-att">
-                                                        <rect key="frame" x="379" y="0.0" width="15" height="55"/>
+                                                        <rect key="frame" x="384" y="0.0" width="10" height="55"/>
                                                         <color key="backgroundColor" systemColor="systemYellowColor"/>
                                                         <constraints>
-                                                            <constraint firstAttribute="width" constant="15" id="gVr-4w-9Dw"/>
+                                                            <constraint firstAttribute="width" constant="10" id="gVr-4w-9Dw"/>
                                                         </constraints>
                                                         <userDefinedRuntimeAttributes>
                                                             <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
@@ -311,6 +312,7 @@
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="addFKContraintKeyButton" destination="b6Q-NE-fAR" id="qt3-BN-SeQ"/>
                         <outlet property="addForeignKeyButtonView" destination="KhI-g2-FDw" id="L6I-om-14n"/>
                         <outlet property="attributeNameText" destination="vVL-J8-SNj" id="lih-Jc-LrG"/>
                         <outlet property="attributeTypeText" destination="kIl-iF-foI" id="U6G-2Q-lcJ"/>

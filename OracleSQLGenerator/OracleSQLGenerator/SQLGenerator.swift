@@ -16,15 +16,16 @@ struct SQLGenerator {
         for table in database.tables {
             SQLString = SQLString.add("-- Drop and Create \(table.name.capitalized) Table")
             SQLString = SQLString.add(makeSQL(table: table))
+            SQLString = SQLString.add("")
         }
         return SQLString
     }
     
     private static func makeSQL(table: Table) -> String {
-        var sql = "DROP TABLE \(table.name.capitalized) CASCADE CONSTRAINTS;"
-        sql = sql.add("CREATE TABLE \(table.name.capitalized) (")
+        var sql = "DROP TABLE \(table.name.uppercased()) CASCADE CONSTRAINTS;"
+        sql = sql.add("CREATE TABLE \(table.name.uppercased()) (")
         for attribute in table.attributes {
-            let sqlString = "\(attribute.name.uppercased()) \(getTypeFromAttributeType(type: attribute.type)) \(attribute.isNull ? "" : "not null") \(attribute.isUnique && !attribute.isPrimaryKey ? "UNIQUE" : "") \(attribute == table.attributes.last ? "" : ",")"
+            let sqlString = "   \(attribute.name.uppercased())     \(getTypeFromAttributeType(type: attribute.type)) \(attribute.isNullable ? "" : "not null") \(attribute.isUnique && !attribute.isPrimaryKey ? "UNIQUE" : "") \(attribute == table.attributes.last ? "" : ",")"
             sql = sql.add(sqlString)
         }
         let contraintSQL = addKeyConstraints(table: table)
@@ -32,25 +33,30 @@ struct SQLGenerator {
             sql += ","
         }
         sql = sql.add(contraintSQL)
-        sql = sql.add(");")
+        //        sql = sql.add(");")
+        sql += ");"
         return sql
     }
     
     private static func getTypeFromAttributeType(type: AttributeType) -> String {
         var typeString = ""
         switch type {
-        case .integer:
-            typeString = "int"
+        case .number:
+            typeString = "NUMBER"
+        case .numberShort:
+            typeString = "NUMBER (7)"
+        case .numberShorter:
+            typeString = "NUMBER (3)"
         case .varcharLong:
-            typeString = "varchar(255)"
+            typeString = "VARCHAR2 (255)"
         case .varcharShort:
-            typeString = "varchar(10)"
-        case .floatPoint:
-            typeString = "float(10)"
+            typeString = "VARCHAR2 (10)"
+        case .amount:
+            typeString = "NUMBER (7,2)"
         case .boolean:
-            typeString = "char(1)"
+            typeString = "CHAR (1)"
         case .date:
-            typeString = "varchar(10)"
+            typeString = "DATE"
         }
         return typeString
     }
@@ -59,7 +65,7 @@ struct SQLGenerator {
         var sql = ""
         let attributesWithForeignContraints = table.attributes.filter({ $0.foreignKeyConstraint != nil })
         if let primaryKeyAttribute = table.attributes.first(where: {$0.isPrimaryKey == true}) {
-            sql = sql.add("PRIMARY KEY (\(primaryKeyAttribute.name.uppercased()))\(attributesWithForeignContraints.count > 0 ? ",":"")")
+            sql = sql.add("CONSTRAINT PK_\(table.name.uppercased()) PRIMARY KEY (\(primaryKeyAttribute.name.uppercased()))\(attributesWithForeignContraints.count > 0 ? ",":"")")
         }
         guard !attributesWithForeignContraints.isEmpty,
               let tables = Helper.shared.record.databases.first(where: {$0.id == databaseID})?.tables else {
@@ -68,10 +74,54 @@ struct SQLGenerator {
         for attribute in attributesWithForeignContraints  {
             if let primaryKeyTable = tables.first(where: {$0.id == attribute.foreignKeyConstraint?.primaryKeyTableID}),
                let primaryKeyAttribute = primaryKeyTable.attributes.first(where: {$0.id == attribute.foreignKeyConstraint?.primaryKeyAttributeID}) {
-                sql = sql.add("CONSTRAINT FK_\(primaryKeyTable.name)_\(table.name) FOREIGN KEY (\(attribute.name.uppercased())) REFERENCES \(primaryKeyTable.name.uppercased())(\(primaryKeyAttribute.name))")
+                sql = sql.add("CONSTRAINT FK_\(primaryKeyTable.name.capitalized)\(table.name.capitalized) FOREIGN KEY (\(attribute.name.uppercased())) REFERENCES \(primaryKeyTable.name.uppercased())(\(primaryKeyAttribute.name.uppercased()))")
                 sql += attribute == attributesWithForeignContraints.last ? "" : ","
             }
         }
         return sql
+    }
+    
+    static func generateInsertQuery(database: Database) -> String {
+        var SQLString = ""
+        for table in database.tables {
+            SQLString = SQLString.add(generateInsertQueryForTable(table: table))
+        }
+        return SQLString
+    }
+    
+    static func generateInsertQueryForTable(table: Table) -> String {
+        let tableName = table.name.uppercased()
+        var sql = "INSERT INTO   \(tableName) ("
+        for attribute in table.attributes {
+            sql += attribute.name.capitalized
+            sql += attribute == table.attributes.last ? "" : ", "
+        }
+        sql += ")"
+        sql += " VALUES ("
+        for attribute in table.attributes {
+            sql += getDefaultValueFromAttributeType(type: attribute.type)
+            sql += attribute == table.attributes.last ? "" : ", "
+        }
+        sql += ");"
+        return sql
+    }
+    
+    private static func getDefaultValueFromAttributeType(type: AttributeType) -> String {
+        var typeString = ""
+        switch type {
+        case .number, .numberShort, .numberShorter:
+            typeString = "00"
+        case .varcharLong:
+            typeString = "\'ABCDE\'"
+        case .varcharShort:
+            typeString = "\'ABC\'"
+        case .amount:
+            typeString = "00.00"
+        case .boolean:
+            typeString = "T"
+        case .date:
+            typeString = "\'12/17/80\'"
+        }
+        return typeString
     }
 }

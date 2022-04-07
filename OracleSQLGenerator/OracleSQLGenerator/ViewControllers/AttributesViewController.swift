@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import MessageUI
 
 class AttributesViewController: UIViewController {
     @IBOutlet weak private(set) var tableView: UITableView!
@@ -43,7 +44,23 @@ class AttributesViewController: UIViewController {
         toolBarButton.setTitleTextAttributes([.foregroundColor: UIColor.systemGreen], for: .normal)
         toolBarButton.tintColor = UIColor.green
         
+        let rightButton = UIButton()
+        rightButton.setTitle("  Get Insert Query  ", for: .normal)
+        rightButton.titleLabel?.font = UIFont(name: "Helvetica", size: 15)
+        rightButton.setTitleColor(.label, for: .normal)
+        rightButton.layer.borderWidth = 1.0
+        rightButton.layer.cornerRadius = 6
+        rightButton.layer.borderColor = UIColor.label.cgColor
+        rightButton.backgroundColor = UIColor.clear
+        rightButton.addTarget(self, action: #selector(createInsertQuery), for: .touchUpInside)
+        let rightBarButton = UIBarButtonItem(customView: rightButton)
+        navigationItem.rightBarButtonItem = rightBarButton
+        
         navigationController?.toolbar.setItems([toolBarButton], animated: true)
+    }
+    
+    @objc func createInsertQuery() {
+        viewModel.createInsertQuery()
     }
     
     @objc func addAttribute() {
@@ -142,6 +159,21 @@ extension AttributesViewController: AttributesViewModelDelegate {
         dataSource.apply(snapshot, animatingDifferences: animatingDifferences)
     }
     
+    func displayMailWindow(withQuery: String, tableName: String) {
+        if MFMailComposeViewController.canSendMail() {
+            let mail = MFMailComposeViewController()
+            mail.mailComposeDelegate = self
+//            mail.setToRecipients(["you@yoursite.com"])
+            mail.setMessageBody(withQuery, isHTML: false)
+            mail.setSubject("Insert Query for Table \(tableName.capitalized)")
+            
+            present(mail, animated: true)
+        } else {
+            // show failure alert
+            showErrorAlert(error: "Cannot Send Mail")
+        }
+    }
+    
     func goToEditAttributePage(databaseID: String, tableID: String, attributeID: String) {
         guard let destinationVC = EditAttributeViewController.makeSelf(databaseID: databaseID, tableID: tableID, attributeID: attributeID) else {
             return
@@ -151,5 +183,28 @@ extension AttributesViewController: AttributesViewModelDelegate {
     
     func showError(errorTitle: String, errorDetail: String?) {
         showErrorAlert(error: errorTitle, message: errorDetail)
+    }
+}
+
+
+extension AttributesViewController: MFMailComposeViewControllerDelegate {
+    func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
+        if let _ = error {
+            controller.dismiss(animated: true, completion: nil)
+            return
+        }
+        switch result {
+        case .cancelled:
+            break
+        case .failed:
+            break
+        case .saved:
+            break
+        case .sent:
+            break
+        @unknown default:
+            break
+        }
+        controller.dismiss(animated: true, completion: nil)
     }
 }
