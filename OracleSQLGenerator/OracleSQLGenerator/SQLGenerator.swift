@@ -124,4 +124,40 @@ struct SQLGenerator {
         }
         return typeString
     }
+    
+    static func createSequenceAndTriggerForTable(table: Table) -> String {
+        let sequence = createSequenceForTable(table: table)
+        var sqlString = sequence.sequenceString
+        sqlString = sqlString.add("")
+        sqlString = sqlString.add("")
+        sqlString = sqlString.add(createTriggerForTable(table: table, sequenceName: sequence.sequenceName))
+        return sqlString
+    }
+    
+    typealias SequenceModel = (sequenceString: String, sequenceName: String)
+    
+    static private func createSequenceForTable(table: Table) -> SequenceModel {
+        let sequenceName = "\(table.name.lowercased())_seq;"
+        var sql = "-- Drop and Create Sequence \(sequenceName)"
+        sql = sql.add("DROP sequence \(sequenceName)")
+        sql = sql.add("CREATE sequence \(sequenceName)")
+        return (sql, sequenceName)
+    }
+    
+    static private func createTriggerForTable(table: Table, sequenceName: String) -> String {
+        guard let primaryKey = table.attributes.first(where: {$0.isPrimaryKey == true}) else {
+            return ""
+        }
+        let triggerName = "\(table.name.lowercased())_T1;"
+        var sql = "-- Drop and Create Trigger \(triggerName) for sequence \(sequenceName)"
+        sql = sql.add("create or replace trigger \(triggerName)")
+        sql = sql.add("before insert on \(table.name)")
+        sql = sql.add("for each row")
+        sql = sql.add("begin")
+        sql = sql.add("IF :NEW.\(primaryKey.name) is NULL THEN")
+        sql = sql.add("SELECT \(sequenceName).NEXTVAL INTO :NEW.\(primaryKey.name) from SYS.DUAL;")
+        sql = sql.add("End if;")
+        sql = sql.add("end;")
+        return sql
+    }
 }

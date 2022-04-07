@@ -60,13 +60,13 @@ final class AttributesViewModel: NSObject {
         delegate.updateAttributesList(attributes: table.attributes, animatingDifferences: true)
     }
     
-    func createInsertQuery() {
+    func createSequenceTrigger() {
         guard let delegate = delegate,
               let database = record.databases.first(where: {$0.id == databaseID}),
               let table = database.tables.first(where: {$0.id == tableID}) else {
             return
         }
-        delegate.displayMailWindow(withQuery: SQLGenerator.generateInsertQueryForTable(table: table), tableName: table.name)
+        delegate.displayMailWindow(withQuery: SQLGenerator.createSequenceAndTriggerForTable(table: table), tableName: table.name)
     }
     
     func updateTableTitle() {
