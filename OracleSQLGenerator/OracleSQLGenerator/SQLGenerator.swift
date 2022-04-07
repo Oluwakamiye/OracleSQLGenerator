@@ -140,10 +140,10 @@ struct SQLGenerator {
     typealias SequenceModel = (sequenceString: String, sequenceName: String)
     
     static private func createSequenceForTable(table: Table) -> SequenceModel {
-        let sequenceName = "\(table.name.lowercased())_seq;"
+        let sequenceName = "\(table.name.lowercased())_seq"
         var sql = "-- Drop and Create Sequence \(sequenceName)"
-        sql = sql.add("DROP sequence \(sequenceName)")
-        sql = sql.add("CREATE sequence \(sequenceName)")
+        sql = sql.add("DROP sequence \(sequenceName);")
+        sql = sql.add("CREATE sequence \(sequenceName);")
         return (sql, sequenceName)
     }
     
@@ -151,7 +151,7 @@ struct SQLGenerator {
         guard let primaryKey = table.attributes.first(where: {$0.isPrimaryKey == true}) else {
             return ""
         }
-        let triggerName = "\(table.name.lowercased())_T1;"
+        let triggerName = "\(table.name.lowercased())_T1"
         var sql = "-- Drop and Create Trigger \(triggerName) for sequence \(sequenceName)"
         sql = sql.add("create or replace trigger \(triggerName)")
         sql = sql.add("before insert on \(table.name)")
