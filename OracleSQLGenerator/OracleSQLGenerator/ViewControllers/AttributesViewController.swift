@@ -46,22 +46,22 @@ class AttributesViewController: UIViewController {
         toolBarButton.tintColor = UIColor.green
         
         let rightButton = UIButton()
-        rightButton.setTitle("  Get Insert Query  ", for: .normal)
+        rightButton.setTitle("  Get Sequence Query  ", for: .normal)
         rightButton.titleLabel?.font = UIFont(name: "Helvetica", size: 15)
         rightButton.setTitleColor(.label, for: .normal)
         rightButton.layer.borderWidth = 1.0
         rightButton.layer.cornerRadius = 6
         rightButton.layer.borderColor = UIColor.label.cgColor
         rightButton.backgroundColor = UIColor.clear
-        rightButton.addTarget(self, action: #selector(createInsertQuery), for: .touchUpInside)
+        rightButton.addTarget(self, action: #selector(createSequenceTrigger), for: .touchUpInside)
         let rightBarButton = UIBarButtonItem(customView: rightButton)
         navigationItem.rightBarButtonItem = rightBarButton
         
         navigationController?.toolbar.setItems([toolBarButton], animated: true)
     }
     
-    @objc func createInsertQuery() {
-        viewModel.createInsertQuery()
+    @objc func createSequenceTrigger() {
+        viewModel.createSequenceTrigger()
     }
     
     @objc func addAttribute() {
@@ -165,7 +165,7 @@ extension AttributesViewController: AttributesViewModelDelegate {
         if MFMailComposeViewController.canSendMail() {
             let mail = MFMailComposeViewController()
             mail.mailComposeDelegate = self
-//            mail.setToRecipients(["you@yoursite.com"])
+            //            mail.setToRecipients(["you@yoursite.com"])
             mail.setMessageBody(withQuery, isHTML: false)
             mail.setSubject("Insert Query for Table \(tableName.capitalized)")
             
