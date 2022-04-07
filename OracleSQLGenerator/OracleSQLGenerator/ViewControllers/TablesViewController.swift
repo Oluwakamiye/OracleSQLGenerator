@@ -52,8 +52,6 @@ class TablesViewController: UIViewController {
         rightButton.addTarget(self, action: #selector(createQuery), for: .touchUpInside)
         let rightBarButton = UIBarButtonItem(customView: rightButton)
         navigationItem.rightBarButtonItem = rightBarButton
-        
-        navigationItem.backButtonTitle = "None"
     }
     
     @objc func createQuery() {
@@ -127,9 +125,8 @@ extension TablesViewController: TableViewsModelDelegate {
         if MFMailComposeViewController.canSendMail() {
             let mail = MFMailComposeViewController()
             mail.mailComposeDelegate = self
-//            mail.setToRecipients(["you@yoursite.com"])
             mail.setMessageBody(withQuery, isHTML: false)
-            mail.setSubject("SQL Queries for \(databaseName)")
+            mail.setSubject("SQL Create Queries for Database \(databaseName.capitalized)")
             
             present(mail, animated: true)
         } else {
@@ -160,6 +157,8 @@ extension TablesViewController: MFMailComposeViewControllerDelegate {
         case .saved:
             break
         case .sent:
+            break
+        @unknown default:
             break
         }
         controller.dismiss(animated: true, completion: nil)

@@ -67,7 +67,7 @@ final class EditAttributeViewModel: NSObject {
               var attribute = attributeCopy else {
             return
         }
-        attribute.isNull.toggle()
+        attribute.isNullable.toggle()
         delegate.updateButtonImages(attribute: &attribute)
         self.attributeCopy = attribute
     }
@@ -101,8 +101,9 @@ final class EditAttributeViewModel: NSObject {
         self.attributeCopy = attribute
     }
     
-    func saveAttributeChanges() {
+    func saveAttributeChanges(name: String?) {
         guard let delegate = delegate,
+              var name = name,
               let database = record.databases.first(where: {$0.id == databaseID}),
               let databaseIndex = record.databases.firstIndex(of: database),
               let table = database.tables.first(where: {$0.id == tableID}),
@@ -110,9 +111,22 @@ final class EditAttributeViewModel: NSObject {
               var attribute = table.attributes.first(where: {$0.id == attributeID}),
               let attributeIndex = table.attributes.firstIndex(of: attribute),
               let attributeCopy = attributeCopy else {
+            delegate?.showError(errorTitle: "Save Failed", errorDetail: "Couldn't save changes")
             return
         }
+        name = name.capitalized
+        name = name.trimming(spaces: .leadingAndTrailing)
+        name = name.replacingOccurrences(of: "  ", with: " ")
+        name = name.replacingOccurrences(of: " ", with: "_")
+        // Name check to see if new name exists in table
+        if attribute.name.caseInsensitiveCompare(name) != .orderedSame &&
+           table.attributes.contains(where: { $0.name.caseInsensitiveCompare(name) == .orderedSame}) {
+            delegate.showError(errorTitle: "Save Failed", errorDetail: "New attribute name exists in current table")
+            return
+        }
+        // Update shared record value with new changes
         attribute = attributeCopy
+        attribute.name = name
         table.attributes[attributeIndex] = attribute
         database.tables[tableIndex] = table
         record.databases[databaseIndex] = database
